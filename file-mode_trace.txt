@@ -1,0 +1,37 @@
+{
+	"Name": "main",
+	"SpanContext": {
+		"TraceID": "0070f0f76da0e3c512cca7bdf0e65f43",
+		"SpanID": "07e06c4147e60e7a",
+		"TraceFlags": "01",
+		"TraceState": "",
+		"Remote": false
+	},
+	"Parent": {
+		"TraceID": "00000000000000000000000000000000",
+		"SpanID": "0000000000000000",
+		"TraceFlags": "00",
+		"TraceState": "",
+		"Remote": false
+	},
+	"SpanKind": 1,
+	"StartTime": "2023-07-14T01:07:46.296069+08:00",
+	"EndTime": "2023-07-14T01:07:49.297185667+08:00",
+	"Attributes": null,
+	"Events": null,
+	"Links": null,
+	"Status": {
+		"Code": "Unset",
+		"Description": ""
+	},
+	"DroppedAttributes": 0,
+	"DroppedEvents": 0,
+	"DroppedLinks": 0,
+	"ChildSpanCount": 0,
+	"Resource": null,
+	"InstrumentationLibrary": {
+		"Name": "mytrace",
+		"Version": "",
+		"SchemaURL": ""
+	}
+}
