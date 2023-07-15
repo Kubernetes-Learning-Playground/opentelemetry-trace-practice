@@ -10,7 +10,7 @@ import (
 // GetOrderExtraInfo 模拟对db操作
 func GetOrderExtraInfo(parentCtx context.Context) {
 
-	_, span := middleware.GinTp.Tracer(middleware.TracerName).Start(parentCtx, "order-extrainfo")
+	_, span := middleware.TraceProvider.Tracer(middleware.TracerName).Start(parentCtx, "order-extrainfo")
 	defer span.End()
 
 	span.SetAttributes(attribute.KeyValue{
@@ -22,7 +22,7 @@ func GetOrderExtraInfo(parentCtx context.Context) {
 
 // UpdateOrderState 模拟对db操作
 func UpdateOrderState(parentCtx context.Context) {
-	_, span := middleware.GinTp.Tracer(middleware.TracerName).Start(parentCtx, "order-update-status")
+	_, span := middleware.TraceProvider.Tracer(middleware.TracerName).Start(parentCtx, "order-update-status")
 	defer span.End()
 
 	span.SetAttributes(attribute.KeyValue{

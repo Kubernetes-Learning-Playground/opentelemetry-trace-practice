@@ -18,6 +18,7 @@ import (
 func UserInfoAndScore(c *gin.Context) {
 	id := c.Param("id")
 
+	// 模拟请求其他接口
 	score, _ := requestForMap(c.Request.Context(), "/users/score/"+id)
 	info, _ := requestForMap(c.Request.Context(), "/users/info/"+id)
 	c.JSON(200, gin.H{"info": info, "score": score})
@@ -38,13 +39,15 @@ func UserInfo(c *gin.Context) {
 func Order(c *gin.Context) {
 
 	if c.Query("error") != "" {
+		// 传入error，jaeger中会显示日志
 		span := trace.SpanFromContext(c.Request.Context())
 		span.RecordError(fmt.Errorf("订单错误信息"))
 		c.String(400, "订单错误")
 		return
 	}
 
-	dal.GetOrderExtraInfo(c.Request.Context()) // 好比是子方法，用来获取子业务信息
+	// 子方法，用来获取子业务信息
+	dal.GetOrderExtraInfo(c.Request.Context())
 	dal.UpdateOrderState(c.Request.Context())
 
 	c.String(200, "订单列表")
@@ -69,10 +72,10 @@ func requestForMap(ctx context.Context, reqUrl string) (gin.H, error) {
 		return ret, nil
 	}
 
-	// trace 记录在header中
+	// trace 记录在header中，实现不同请求的链路调用
 	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(req.Header))
 
-	// go自带的 http client 请求
+	// http请求
 	rsp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		log.Println(err)

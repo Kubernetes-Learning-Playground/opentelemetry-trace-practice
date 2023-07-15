@@ -21,10 +21,8 @@ func main() {
 	}
 	defer f.Close()
 
-
 	tp := exporter.NewFileProvider(f)
 	ctx, span := otel.Tracer(TraceName).Start(context.Background(), "main")
-
 
 	// 模拟执行业务逻辑
 	time.Sleep(time.Second * 3)
@@ -32,5 +30,3 @@ func main() {
 	span.End()
 	tp.ForceFlush(ctx)
 }
-
-

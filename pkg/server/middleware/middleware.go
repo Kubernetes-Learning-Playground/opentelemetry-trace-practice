@@ -12,12 +12,12 @@ const (
 	TracerName = "gin"
 )
 
-var GinTp = exporter.NewJaegerProvider()
+var TraceProvider = exporter.NewJaegerProvider()
 
 // OpenTelemetryTraceMiddleware 中间件
 func OpenTelemetryTraceMiddleware() gin.HandlerFunc {
 
-	tracer := GinTp.Tracer(TracerName)
+	tracer := TraceProvider.Tracer(TracerName)
 	return func(c *gin.Context) {
 
 		// 路由完整路径
@@ -30,7 +30,7 @@ func OpenTelemetryTraceMiddleware() gin.HandlerFunc {
 		// 需要把 Propagator 表头加入到 context中
 		ctx = otel.GetTextMapPropagator().Extract(ctx, propagation.HeaderCarrier(c.Request.Header)) //++
 		ctx, span := tracer.Start(ctx, spanName)
-		//ctx, span := GinTp.Tracer(TracerName).Start(c, spanName)
+		//ctx, span := TraceProvider.Tracer(TracerName).Start(c, spanName)
 		defer span.End()
 		c.Request = c.Request.WithContext(ctx) // 设置spanContext
 		c.Next()
@@ -40,8 +40,8 @@ func OpenTelemetryTraceMiddleware() gin.HandlerFunc {
 		attrs := semconv.HTTPAttributesFromHTTPStatusCode(status)
 		span.SetAttributes(attrs...)
 
-		//code, msg := semconv.SpanStatusFromHTTPStatusCode(status)
-		//span.SetStatus(code, msg)
+		code, msg := semconv.SpanStatusFromHTTPStatusCode(status)
+		span.SetStatus(code, msg)
 
 	}
 }
