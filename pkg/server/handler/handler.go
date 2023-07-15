@@ -3,46 +3,57 @@ package handler
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/practice/opentelemetry-practice/pkg/server/middleware"
+	"github.com/practice/opentelemetry-practice/pkg/server/dal"
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/trace"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
-	"time"
 )
 
-// 模拟一个业务函数
-func GetOrderExtraInfo(parentCtx context.Context) {
+func UserInfoAndScore(c *gin.Context) {
+	id := c.Param("id")
 
-	_, span := middleware.GinTp.Tracer(middleware.TracerName).Start(parentCtx, "order-extrainfo")
-	defer span.End()
-
-	span.SetAttributes(attribute.KeyValue{
-		Key: "备注", Value: attribute.StringValue("获取订单额外信息"),
-	})
-
-	time.Sleep(time.Second * 2)
+	score, _ := requestForMap(c.Request.Context(), "/users/score/"+id)
+	info, _ := requestForMap(c.Request.Context(), "/users/info/"+id)
+	c.JSON(200, gin.H{"info": info, "score": score})
 }
 
-// 模拟 更新订单状态
-func UpdateOrderState(parentCtx context.Context) {
-	_, span := middleware.GinTp.Tracer(middleware.TracerName).Start(parentCtx, "order-update-status")
-	defer span.End()
-
-	span.SetAttributes(attribute.KeyValue{
-		Key: "备注", Value: attribute.StringValue("更新订单状态"),
-	})
-	time.Sleep(time.Second * 1) //假设这个是业务函数
+func UserScore(c *gin.Context) {
+	fmt.Println(c.Request.Header)
+	c.JSON(200, gin.H{"userid": c.Param("id"), "socre": 100})
 }
 
-// ----------用户相关的演示
+func UserInfo(c *gin.Context) {
+
+	id := c.Param("id")
+
+	c.JSON(200, gin.H{"userid": c.Param("id"), "name": "user-" + id})
+}
+
+func Order(c *gin.Context) {
+
+	if c.Query("error") != "" {
+		span := trace.SpanFromContext(c.Request.Context())
+		span.RecordError(fmt.Errorf("订单错误信息"))
+		c.String(400, "订单错误")
+		return
+	}
+
+	dal.GetOrderExtraInfo(c.Request.Context()) // 好比是子方法，用来获取子业务信息
+	dal.UpdateOrderState(c.Request.Context())
+
+	c.String(200, "订单列表")
+}
+
 const LocalHost = "http://localhost:8080"
 
-func RequestForMap(ctx context.Context, reqUrl string) (gin.H, error) {
+// requestForMap 模拟请求其他接口时，记录下header trace
+func requestForMap(ctx context.Context, reqUrl string) (gin.H, error) {
 
 	ret := gin.H{}
 	u, err := url.Parse(reqUrl)
@@ -58,8 +69,8 @@ func RequestForMap(ctx context.Context, reqUrl string) (gin.H, error) {
 		return ret, nil
 	}
 
-	otel.GetTextMapPropagator().Inject(ctx,
-		propagation.HeaderCarrier(req.Header))
+	// trace 记录在header中
+	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(req.Header))
 
 	// go自带的 http client 请求
 	rsp, err := http.DefaultClient.Do(req)
