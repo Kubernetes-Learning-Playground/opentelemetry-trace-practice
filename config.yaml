@@ -1,0 +1,16 @@
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: localhost:4318
+        
+exporters:
+  logging:
+    loglevel: debug
+ 
+    
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [logging]

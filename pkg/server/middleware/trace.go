@@ -2,9 +2,10 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	exporter "github.com/practice/opentelemetry-practice/pkg/opentelemetry/exporter"
+	"github.com/practice/opentelemetry-practice/pkg/opentelemetry/exporter"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.12.0"
 )
 
@@ -12,11 +13,11 @@ const (
 	TracerName = "gin"
 )
 
-var TraceProvider = exporter.NewJaegerProvider()
+var TraceProvider *trace.TracerProvider
 
 // OpenTelemetryTraceMiddleware 中间件
-func OpenTelemetryTraceMiddleware() gin.HandlerFunc {
-
+func OpenTelemetryTraceMiddleware(endpoint string) gin.HandlerFunc {
+	TraceProvider = exporter.NewJaegerProvider()
 	tracer := TraceProvider.Tracer(TracerName)
 	return func(c *gin.Context) {
 

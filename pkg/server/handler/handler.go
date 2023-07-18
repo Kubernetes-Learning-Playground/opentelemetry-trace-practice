@@ -4,15 +4,19 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/practice/opentelemetry-practice/pkg/server/dal"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/propagation"
-	"go.opentelemetry.io/otel/trace"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
+
+	"github.com/gin-gonic/gin"
+	"github.com/practice/opentelemetry-practice/pkg/server/dal"
+	"github.com/practice/opentelemetry-practice/pkg/server/middleware"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/trace"
 )
 
 func UserInfoAndScore(c *gin.Context) {
@@ -32,7 +36,6 @@ func UserScore(c *gin.Context) {
 func UserInfo(c *gin.Context) {
 
 	id := c.Param("id")
-
 	c.JSON(200, gin.H{"userid": c.Param("id"), "name": "user-" + id})
 }
 
@@ -46,10 +49,13 @@ func Order(c *gin.Context) {
 		return
 	}
 
+	orderStr := c.Query("ordername")
+
 	// 子方法，用来获取子业务信息
 	dal.GetOrderExtraInfo(c.Request.Context())
 	dal.UpdateOrderState(c.Request.Context())
 
+	middleware.MetricsCollector.OrderCounterVec.With(prometheus.Labels{"ordername": orderStr}).Inc() // 访问量指标就增加一次
 	c.String(200, "订单列表")
 }
 
@@ -90,4 +96,24 @@ func requestForMap(ctx context.Context, reqUrl string) (gin.H, error) {
 		return ret, err
 	}
 	return ret, nil
+}
+
+func UserVisit(c *gin.Context) {
+
+	userStr := c.Query("userid")
+
+	fmt.Printf("the user is %s\n", userStr)
+
+	middleware.MetricsCollector.VisitCounterVec.With(prometheus.Labels{"userid": userStr}).Inc() // 访问量指标就增加一次
+
+	c.JSON(200, gin.H{
+		"message": "OK",
+	})
+}
+
+func PrometheusHandler() gin.HandlerFunc {
+	h := promhttp.Handler()
+	return func(c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
+	}
 }
