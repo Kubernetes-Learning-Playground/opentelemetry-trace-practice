@@ -23,16 +23,16 @@ func NewJaegerResource() *resource.Resource {
 }
 
 // NewJaegerExporter 导出器
-func NewJaegerExporter() (trace.SpanExporter, error) {
+func NewJaegerExporter(endpoint string) (trace.SpanExporter, error) {
 	return jaeger.New(
 		// TODO: 配置文件传进来
-		jaeger.WithCollectorEndpoint(jaeger.WithEndpoint("http://localhost:14268/api/traces")),
+		jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(endpoint)),
 	)
 }
 
 // NewJaegerProvider jaeger-mode提供者
-func NewJaegerProvider() *trace.TracerProvider {
-	exporter, err := NewJaegerExporter()
+func NewJaegerProvider(endpoint string) *trace.TracerProvider {
+	exporter, err := NewJaegerExporter(endpoint)
 	if err != nil {
 		log.Fatalln(err)
 	}

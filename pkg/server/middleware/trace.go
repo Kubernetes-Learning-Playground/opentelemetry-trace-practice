@@ -17,7 +17,7 @@ var TraceProvider *trace.TracerProvider
 
 // OpenTelemetryTraceMiddleware 中间件
 func OpenTelemetryTraceMiddleware(endpoint string) gin.HandlerFunc {
-	TraceProvider = exporter.NewJaegerProvider()
+	TraceProvider = exporter.NewJaegerProvider(endpoint)
 	tracer := TraceProvider.Tracer(TracerName)
 	return func(c *gin.Context) {
 
