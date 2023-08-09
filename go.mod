@@ -1,14 +1,13 @@
 module github.com/practice/opentelemetry-practice
 
-go 1.18
+go 1.20
 
 require (
 	github.com/gin-gonic/gin v1.9.1
-	github.com/hashicorp/golang-lru/v2 v2.0.5
 	github.com/prometheus/client_golang v1.16.0
 	github.com/spf13/cobra v1.7.0
 	go.opentelemetry.io/otel v1.16.0
-	go.opentelemetry.io/otel/exporters/jaeger v1.14.0
+	go.opentelemetry.io/otel/exporters/jaeger v1.16.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.16.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.16.0
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.14.0

@@ -22,7 +22,7 @@ func init() {
 	runCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "debug mode")
 	runCmd.PersistentFlags().StringVarP(&serverPort, "port", "p", "8080", "server port")
 	runCmd.PersistentFlags().StringVarP(&jaegerEndpoint, "jaegerEndpoint", "j", "http://localhost:14268/api/traces", "jaeger endpoint for trace")
-	runCmd.AddCommand(httpServerCmd())
+	runCmd.AddCommand(httpServerCmd(), informerCmd())
 }
 
 func Execute() {

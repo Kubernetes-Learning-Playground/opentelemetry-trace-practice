@@ -2,12 +2,19 @@ package exporter
 
 import (
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/jaeger"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
-	semconv "go.opentelemetry.io/otel/semconv/v1.12.0"
+	semconv "go.opentelemetry.io/otel/semconv/v1.20.0"
 	"log"
+)
+
+const (
+	service     = "k8s-informer-opentelemetry"
+	environment = "development"
+	id          = 1
 )
 
 // NewResource 资源：可观测实体
@@ -15,11 +22,14 @@ func NewJaegerResource() *resource.Resource {
 	r, _ := resource.Merge(
 		resource.Default(),
 		resource.NewWithAttributes(
-			semconv.SchemaURL,
-			semconv.ServiceNameKey.String("myweb"),
-			semconv.ServiceVersionKey.String("v1.0.0"),
+			"",
+			semconv.ServiceNameKey.String(service),
+			attribute.String("environment", environment),
+			attribute.Int64("ID", id),
+			semconv.ServiceVersionKey.String("v1.20.0"),
 		),
 	)
+
 	return r
 }
 
@@ -42,6 +52,7 @@ func NewJaegerProvider(endpoint string) *trace.TracerProvider {
 	tp := trace.NewTracerProvider(
 		trace.WithBatcher(exporter),
 		trace.WithResource(res),
+		trace.WithSampler(trace.AlwaysSample()),
 	)
 	otel.SetTracerProvider(tp)
 	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))

@@ -1,19 +1,19 @@
-package pod_otel
+package k8s_resource_otel
 
 import (
-	"fmt"
 	"github.com/practice/opentelemetry-practice/pkg/common"
+	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/informers"
-	//configs "k8sotel/pkg/config"
+	"k8s.io/klog/v2"
 )
 
-func WatchPod() {
+func K8sResourceInformer(c *common.ServerConfig) {
 	client := common.NewK8sConfig().InitClientSet()
 	fact := informers.NewSharedInformerFactoryWithOptions(client, 0, informers.WithNamespace("default"))
 	podInformer := fact.Core().V1().Pods().Informer()
 
-	podInformer.AddEventHandler(NewPodHandler())
-	ch := make(chan struct{})
-	fmt.Println("k8s可观测开始启动...")
-	podInformer.Run(ch)
+	podInformer.AddEventHandler(NewPodHandler(c.JaegerEndpoint))
+	klog.Infof("k8s resource informer trace server start...")
+	fact.Start(wait.NeverStop)
+	<- wait.NeverStop
 }
