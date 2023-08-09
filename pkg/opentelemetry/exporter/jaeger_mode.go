@@ -17,6 +17,7 @@ func NewJaegerResource() *resource.Resource {
 		resource.NewWithAttributes(
 			semconv.SchemaURL,
 			semconv.ServiceNameKey.String("myweb"),
+			semconv.ServiceVersionKey.String("v1.0.0"),
 		),
 	)
 	return r

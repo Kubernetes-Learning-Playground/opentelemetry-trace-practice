@@ -13,8 +13,8 @@ func httpServerCmd() *cobra.Command {
 		Long:  "",
 		Run: func(cmd *cobra.Command, args []string) {
 			cfg := &common.ServerConfig{
-				Debug: debug,
-				Port: serverPort,
+				Debug:          debug,
+				Port:           serverPort,
 				JaegerEndpoint: jaegerEndpoint,
 			}
 			// 启动http server

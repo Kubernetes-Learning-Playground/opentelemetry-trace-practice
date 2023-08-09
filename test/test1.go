@@ -4,12 +4,12 @@ import (
 //"context"
 //"time"
 
-//"go.opentelemetry.io/otel"
-//"go.opentelemetry.io/otel/metric"
-//"go.opentelemetry.io/otel/sdk/export/metric/prometheus"
-//"go.opentelemetry.io/otel/sdk/metric/controller/push"
-//"go.opentelemetry.io/otel/sdk/metric/processor/basic"
-//"go.opentelemetry.io/otel/sdk/metric/selector/simple"
+// "go.opentelemetry.io/otel"
+// "go.opentelemetry.io/otel/metric"
+// "go.opentelemetry.io/otel/sdk/export/metric/prometheus"
+// "go.opentelemetry.io/otel/sdk/metric/controller/push"
+// "go.opentelemetry.io/otel/sdk/metric/processor/basic"
+// "go.opentelemetry.io/otel/sdk/metric/selector/simple"
 )
 
 func main() {
