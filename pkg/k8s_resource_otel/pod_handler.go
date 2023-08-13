@@ -31,7 +31,7 @@ type PodHandler struct {
 
 func NewPodHandler(jaegerEndpoint string) *PodHandler {
 	return &PodHandler{
-		provider: exporter.NewJaegerProvider(jaegerEndpoint),
+		provider: exporter.NewJaegerProvider(jaegerEndpoint, exporter.ServiceInformer),
 	}
 }
 

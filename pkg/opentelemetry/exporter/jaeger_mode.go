@@ -12,18 +12,19 @@ import (
 )
 
 const (
-	service     = "k8s-informer-opentelemetry"
+	ServiceInformer     = "k8s-informer-opentelemetry"
+	ServiceHttp     = "go-httpServer-opentelemetry"
 	environment = "development"
 	id          = 1
 )
 
 // NewResource 资源：可观测实体
-func NewJaegerResource() *resource.Resource {
+func NewJaegerResource(serviceName string) *resource.Resource {
 	r, _ := resource.Merge(
 		resource.Default(),
 		resource.NewWithAttributes(
 			"",
-			semconv.ServiceNameKey.String(service),
+			semconv.ServiceNameKey.String(serviceName),
 			attribute.String("environment", environment),
 			attribute.Int64("ID", id),
 			semconv.ServiceVersionKey.String("v1.20.0"),
@@ -42,12 +43,12 @@ func NewJaegerExporter(endpoint string) (trace.SpanExporter, error) {
 }
 
 // NewJaegerProvider jaeger-mode提供者
-func NewJaegerProvider(endpoint string) *trace.TracerProvider {
+func NewJaegerProvider(endpoint string, serviceName string) *trace.TracerProvider {
 	exporter, err := NewJaegerExporter(endpoint)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	res := NewJaegerResource()
+	res := NewJaegerResource(serviceName)
 
 	tp := trace.NewTracerProvider(
 		trace.WithBatcher(exporter),
