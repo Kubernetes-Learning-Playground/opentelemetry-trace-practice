@@ -4,9 +4,9 @@
 设计背景：
 主要用于学习opentelemetry链路追踪。
 1. 自建httpServer，内部嵌入trace，实现http server接口的链路追踪。
-![]()
+![](https://github.com/Kubernetes-Learning-Playground/opentelemetry-trace-practice/blob/main/image/WechatIMG1298.png?raw=true)
 2. informer内部嵌入trace，实现pod的生命周期连路追踪。
-![]()
+![](https://github.com/Kubernetes-Learning-Playground/opentelemetry-trace-practice/blob/main/image/WechatIMG1297.png?raw=true)
 
 
 
