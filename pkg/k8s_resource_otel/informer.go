@@ -12,8 +12,8 @@ func K8sResourceInformer(c *common.ServerConfig) {
 	fact := informers.NewSharedInformerFactoryWithOptions(client, 0, informers.WithNamespace("default"))
 	podInformer := fact.Core().V1().Pods().Informer()
 
-	podInformer.AddEventHandler(NewPodHandler(c.JaegerEndpoint, ))
+	podInformer.AddEventHandler(NewPodHandler(c.JaegerEndpoint))
 	klog.Infof("k8s resource informer trace server start...")
 	fact.Start(wait.NeverStop)
-	<- wait.NeverStop
+	<-wait.NeverStop
 }

@@ -12,10 +12,10 @@ import (
 )
 
 const (
-	ServiceInformer     = "k8s-informer-opentelemetry"
+	ServiceInformer = "k8s-informer-opentelemetry"
 	ServiceHttp     = "go-httpServer-opentelemetry"
-	environment = "development"
-	id          = 1
+	environment     = "development"
+	id              = 1
 )
 
 // NewResource 资源：可观测实体
