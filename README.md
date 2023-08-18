@@ -9,6 +9,11 @@
 ![](https://github.com/Kubernetes-Learning-Playground/opentelemetry-trace-practice/blob/main/image/img.png?raw=true)
 
 
+接入方式主要有两种：(黄色部分属于嵌入服务中的部份，绿色部分是后端部分)
+- 一种是使用各个观测后端的sdk 如下图：
+![](https://github.com/Kubernetes-Learning-Playground/opentelemetry-trace-practice/blob/main/image/jaeger-prometheus.png?raw=true)
+- 一种是使用opentelemetry-collector实现的sdk，使用此方法，调用者只需关注collector的sdk，然后维护对应的配置文件即可。
+![](https://github.com/Kubernetes-Learning-Playground/opentelemetry-trace-practice/blob/main/image/otel.png?raw=true)
 
 - docker部署jaeger
 ```bash

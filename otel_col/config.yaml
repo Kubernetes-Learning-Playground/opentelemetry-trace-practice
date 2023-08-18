@@ -2,6 +2,7 @@
 # 配置文档 https://opentelemetry.io/docs/collector/configuration/#exporters
 # github https://github.com/open-telemetry/opentelemetry-collector
 # 本次使用二进制部署opentelemetry collector
+# ./otelcol --config config.yaml
 
 # 数据如何进入OpenTelemetry Collector
 receivers:
