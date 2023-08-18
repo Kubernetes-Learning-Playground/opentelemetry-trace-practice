@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/practice/opentelemetry-practice/pkg/k8s_resource_otel/helpers/k8shelper"
 	"github.com/practice/opentelemetry-practice/pkg/k8s_resource_otel/helpers/lru"
-	"github.com/practice/opentelemetry-practice/pkg/opentelemetry/exporter"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
@@ -42,7 +41,7 @@ type PodHandler struct {
 
 func NewPodHandler(jaegerEndpoint string) *PodHandler {
 	return &PodHandler{
-		provider: exporter.NewJaegerProvider(jaegerEndpoint, exporter.ServiceInformer),
+		//provider: exporter.NewJaegerProvider(jaegerEndpoint, exporter.ServiceInformer),
 	}
 }
 

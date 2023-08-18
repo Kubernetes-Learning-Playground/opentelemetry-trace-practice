@@ -17,7 +17,9 @@ var TraceProvider *trace.TracerProvider
 
 // OpenTelemetryTraceMiddleware 中间件
 func OpenTelemetryTraceMiddleware(endpoint string) gin.HandlerFunc {
-	TraceProvider = exporter.NewJaegerProvider(endpoint, exporter.ServiceHttp)
+	// 直接使用otel collector sdk
+	//TraceProvider = exporter.NewJaegerProvider(endpoint, exporter.ServiceHttp)
+	TraceProvider = exporter.NewOTLProvider(exporter.ServiceHttp)
 	tracer := TraceProvider.Tracer(TracerName)
 	return func(c *gin.Context) {
 

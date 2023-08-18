@@ -1,0 +1,26 @@
+# 下载 https://github.com/open-telemetry/opentelemetry-collector-releases/releases/tag/v0.83.0
+# 配置文档 https://opentelemetry.io/docs/collector/configuration/#exporters
+# github https://github.com/open-telemetry/opentelemetry-collector
+# 本次使用二进制部署opentelemetry collector
+
+# 数据如何进入OpenTelemetry Collector
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: localhost:4318
+
+# 数据将发给一个或多个后端
+exporters:
+  logging:
+    loglevel: debug
+  jaeger:
+    endpoint: "localhost:14250"
+    tls:
+      insecure: true
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [logging,jaeger]

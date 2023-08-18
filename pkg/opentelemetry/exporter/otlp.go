@@ -2,7 +2,9 @@ package exporter
 
 import (
 	"context"
+	"fmt"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"go.opentelemetry.io/otel/propagation"
@@ -13,20 +15,26 @@ import (
 )
 
 // NewResource 资源：可观测实体
-func NewOTLPResource() *resource.Resource {
-	r, _ := resource.Merge(
+func NewOTLPResource(serviceName string) *resource.Resource {
+	r, err := resource.Merge(
 		resource.Default(),
 		resource.NewWithAttributes(
-			semconv.SchemaURL,
-			semconv.ServiceNameKey.String("myotlpweb"),
+			"",
+			semconv.ServiceNameKey.String(serviceName),
+			attribute.String("environment", environment),
+			attribute.Int64("ID", id),
+			semconv.ServiceVersionKey.String("v1.20.0"),
 		),
 	)
+	if err != nil {
+		fmt.Println("err: ", err)
+	}
 	return r
 }
 
 // NewOTLPExporter 导出器
 func NewOTLPExporter() (trace.SpanExporter, error) {
-	// 跳过证书
+	// 跳过证书，使用http部署
 	client := otlptracehttp.NewClient(otlptracehttp.WithInsecure())
 	exp, err := otlptrace.New(context.Background(), client)
 	if err != nil {
@@ -36,12 +44,13 @@ func NewOTLPExporter() (trace.SpanExporter, error) {
 }
 
 // NewOTLProvider otlp-mode提供者
-func NewOTLProvider() *trace.TracerProvider {
+// 使用OTLProvider，可以直接由otel-collector对接所有的蒐集器
+func NewOTLProvider(serviceName string) *trace.TracerProvider {
 	exporter, err := NewOTLPExporter()
 	if err != nil {
 		log.Fatalln(err)
 	}
-	res := NewOTLPResource()
+	res := NewOTLPResource(serviceName)
 
 	tp := trace.NewTracerProvider(
 		trace.WithBatcher(exporter),
@@ -51,5 +60,4 @@ func NewOTLProvider() *trace.TracerProvider {
 	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
 
 	return tp
-
 }

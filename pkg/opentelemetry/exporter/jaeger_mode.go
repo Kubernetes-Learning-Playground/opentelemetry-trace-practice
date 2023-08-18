@@ -43,6 +43,7 @@ func NewJaegerExporter(endpoint string) (trace.SpanExporter, error) {
 }
 
 // NewJaegerProvider jaeger-mode提供者
+// 直接对接Jaeger sdk
 func NewJaegerProvider(endpoint string, serviceName string) *trace.TracerProvider {
 	exporter, err := NewJaegerExporter(endpoint)
 	if err != nil {

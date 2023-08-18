@@ -22,7 +22,7 @@ import (
 func UserInfoAndScore(c *gin.Context) {
 	id := c.Param("id")
 
-	// 模拟请求其他接口
+	// 模拟请求其他接口，重要
 	score, _ := requestForMap(c.Request.Context(), "/users/score/"+id)
 	info, _ := requestForMap(c.Request.Context(), "/users/info/"+id)
 	c.JSON(200, gin.H{"info": info, "score": score})
@@ -52,6 +52,8 @@ func Order(c *gin.Context) {
 	orderStr := c.Query("ordername")
 
 	// 子方法，用来获取子业务信息
+	// 需要把ctx传进去，可以形成子span方法
+	// 这两个共用一个span，同层级
 	dal.GetOrderExtraInfo(c.Request.Context())
 	dal.UpdateOrderState(c.Request.Context())
 

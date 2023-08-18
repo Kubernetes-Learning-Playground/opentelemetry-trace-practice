@@ -14,7 +14,7 @@ func GetOrderExtraInfo(parentCtx context.Context) {
 	defer span.End()
 
 	span.SetAttributes(attribute.KeyValue{
-		Key: "备注", Value: attribute.StringValue("获取订单额外信息"),
+		Key: "db-operation", Value: attribute.StringValue("获取订单额外信息"),
 	})
 
 	time.Sleep(time.Second * 2)
@@ -26,7 +26,7 @@ func UpdateOrderState(parentCtx context.Context) {
 	defer span.End()
 
 	span.SetAttributes(attribute.KeyValue{
-		Key: "备注", Value: attribute.StringValue("更新订单状态"),
+		Key: "db-operation", Value: attribute.StringValue("更新订单状态"),
 	})
 	time.Sleep(time.Second * 1) //假设这个是业务函数
 }
