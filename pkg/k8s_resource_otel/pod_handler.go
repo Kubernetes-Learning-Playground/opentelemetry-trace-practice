@@ -39,9 +39,12 @@ type PodHandler struct {
 	provider *trace.TracerProvider
 }
 
-func NewPodHandler(jaegerEndpoint string) *PodHandler {
+var GlobalJaegerProvider *trace.TracerProvider
+
+
+func NewPodHandler() *PodHandler {
 	return &PodHandler{
-		//provider: exporter.NewJaegerProvider(jaegerEndpoint, exporter.ServiceInformer),
+		provider: GlobalJaegerProvider,
 	}
 }
 
